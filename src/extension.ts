@@ -1,7 +1,5 @@
-"use strict";
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import getTestCommand from "./lib/getTestCommand";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -9,17 +7,26 @@ export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
     "extension.runFocusedTest",
     () => {
-      let editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.activeTextEditor;
 
       if (!editor) {
         // TODO: run last test
-        console.log("No file selected");
+        vscode.window.showInformationMessage(`No file selected`);
         return;
       }
 
-      let selection = editor.selection;
-      const line = selection.active.line;
-      vscode.window.showInformationMessage(`Running test on line #${line}`);
+      const document = editor.document;
+
+      if (!document) {
+        vscode.window.showInformationMessage(`No document open`);
+        return;
+      }
+
+      const line = editor.selection.active.line;
+
+      const command = getTestCommand(document, line);
+
+      vscode.window.showInformationMessage(`Test command is #${command}`);
     }
   );
 
