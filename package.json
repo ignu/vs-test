@@ -18,7 +18,7 @@
     "commands": [
       {
         "command": "extension.runFocusedTest",
-        "title": "Run Focused Test"
+        "title": "VsTest: Run Focused Test"
       }
     ]
   },
