@@ -1,6 +1,6 @@
 {
-  "name": "vs-test",
-  "displayName": "VSTest",
+  "name": "vstest",
+  "displayName": "VsTest",
   "description": "Run focused unit tests from the file you're editing",
   "version": "0.0.1",
   "publisher": "ignu",
@@ -21,6 +21,22 @@
         "title": "VsTest: Run Focused Test"
       }
     ]
+  },
+  "configuration": {
+    "type": "object",
+    "title": "VsTest configuration",
+    "properties": {
+      "vstest.jest.command": {
+        "description": "The path to the Jest binary, or an npm command to run tests prefixed with `--` e.g. `node_modules/.bin/jest` or `npm test --`",
+        "type": "string",
+        "default": null
+      },
+      "vstest.jest.flags": {
+        "description": "Flags to pass to jest",
+        "type": "string",
+        "default": "--no-coverage"
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
