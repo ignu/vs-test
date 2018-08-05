@@ -39,6 +39,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       const command = getTestCommand(document, line);
 
+      if (!command) {
+        vscode.window.showWarningMessage("VsTest: No test found.");
+        return;
+      }
       run(command);
     }
   );

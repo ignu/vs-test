@@ -27,6 +27,9 @@ export default function getTestCommand(
   const { command, flags } = settings.jest;
 
   const testName = getJsTestName(document, lineNumber);
+  if (!testName) {
+    return null;
+  }
   const rv = `${command} ${flags} -t '${testName}'`;
   console.log(rv);
   return rv;
