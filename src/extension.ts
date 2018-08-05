@@ -1,8 +1,21 @@
 import * as vscode from "vscode";
 import getTestCommand from "./lib/getTestCommand";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const getOrCreateTerminal = () => {
+  const count = (<any>vscode.window).terminals.length;
+  if (count) {
+    const terminals = <vscode.Terminal[]>(<any>vscode.window).terminals;
+    return terminals[count - 1];
+  }
+  return vscode.window.createTerminal("vstest");
+};
+
+const run = (command: string) => {
+  let terminal = getOrCreateTerminal();
+  vscode.window.showInformationMessage(`running ${command}.....`);
+  terminal.sendText(command);
+};
+
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
     "extension.runFocusedTest",
@@ -26,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       const command = getTestCommand(document, line);
 
-      vscode.window.showInformationMessage(`Test command is #${command}`);
+      run(command);
     }
   );
 
