@@ -12,13 +12,13 @@ suite("getTestCommand", () => {
     vscode.workspace.openTextDocument(jestFile).then(
       document => {
         const expectedCommand =
-          "./node_modules/.bin/jest --no-coverage -t 'cool'";
+          "./node_modules/.bin/jest --no-coverage -t 'good test'";
         assert.equal(getTestCommand(document, 4), expectedCommand);
         done();
       },
       error => {
-        done();
         assert.fail(error, error);
+        done();
       }
     );
   });

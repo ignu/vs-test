@@ -1,21 +1,33 @@
 import * as vscode from "vscode";
 
 import { getExtensionSettings } from "./settings";
+
+const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
+  for (let line = lineNumber; line >= 0; line--) {
+    const { text } = document.lineAt(line);
+
+    const regex = /it ?\(["'](.+)["']/;
+    const match = text.match(regex);
+
+    if (match) {
+      return match[1];
+    }
+  }
+
+  return null;
+};
+
 export default function getTestCommand(
   document: vscode.TextDocument,
-  lineNumber: Number
+  lineNumber: number
 ) {
-  const { languageId } = document;
+  // const { languageId } = document;
   const settings = getExtensionSettings();
-  console.log("========");
-  console.log(settings);
-  console.log("settings ========");
-
-  console.log("getting test command for", languageId);
 
   const { command, flags } = settings.jest;
 
-  const testName = "cool";
+  const testName = getJsTestName(document, lineNumber);
   const rv = `${command} ${flags} -t '${testName}'`;
+  console.log(rv);
   return rv;
 }
