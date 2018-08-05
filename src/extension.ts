@@ -12,7 +12,7 @@ const getOrCreateTerminal = () => {
 
 const run = (command: string) => {
   let terminal = getOrCreateTerminal();
-  vscode.window.showInformationMessage(`running ${command}.....`);
+  vscode.window.showInformationMessage(`VsTest: Running ${command}.....`);
   terminal.sendText(command);
 };
 
@@ -24,14 +24,14 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (!editor) {
         // TODO: run last test
-        vscode.window.showInformationMessage(`No file selected`);
+        vscode.window.showInformationMessage(`VsTest: No file selected`);
         return;
       }
 
       const document = editor.document;
 
       if (!document) {
-        vscode.window.showInformationMessage(`No document open`);
+        vscode.window.showInformationMessage(`VsTest: No document open`);
         return;
       }
 

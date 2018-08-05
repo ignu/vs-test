@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import lastTest from "./lastTest";
 
 import { getExtensionSettings } from "./settings";
 
@@ -10,11 +11,13 @@ const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
     const match = text.match(regex);
 
     if (match) {
-      return match[1];
+      const testName = match[1];
+      lastTest.save(testName);
+      return testName;
     }
   }
 
-  return null;
+  return lastTest.load();
 };
 
 export default function getTestCommand(
@@ -31,6 +34,5 @@ export default function getTestCommand(
     return null;
   }
   const rv = `${command} ${flags} -t '${testName}'`;
-  console.log(rv);
   return rv;
 }
