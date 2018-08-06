@@ -20,19 +20,48 @@ const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
   return lastTest.load();
 };
 
+const testCommandResolvers = {
+  jest: (document: vscode.TextDocument, lineNumber: number) => {
+    const settings = getExtensionSettings();
+
+    const { command, flags } = settings.jest;
+
+    const testName = getJsTestName(document, lineNumber);
+    if (!testName) {
+      return null;
+    }
+    const rv = `${command} ${flags} -t '${testName}'`;
+    return rv;
+  },
+  elixir: (document: vscode.TextDocument, lineNumber: number) => {
+    return "mix test test/cool_test.ex:6";
+  }
+};
+
+const getTestType = (document: vscode.TextDocument) => {
+  const { languageId } = document;
+  switch (languageId) {
+    case "javascript":
+      return "jest";
+      break;
+    case "elixir":
+      return "jest";
+      break;
+    default:
+      vscode.window.showErrorMessage(`${languageId} is not supported`);
+      return null;
+  }
+};
+
 export default function getTestCommand(
   document: vscode.TextDocument,
   lineNumber: number
 ) {
-  // const { languageId } = document;
-  const settings = getExtensionSettings();
+  const framework = getTestType(document);
+  const resolver = framework && testCommandResolvers[framework];
 
-  const { command, flags } = settings.jest;
-
-  const testName = getJsTestName(document, lineNumber);
-  if (!testName) {
+  if (!resolver) {
     return null;
   }
-  const rv = `${command} ${flags} -t '${testName}'`;
-  return rv;
+  return resolver(document, lineNumber);
 }
