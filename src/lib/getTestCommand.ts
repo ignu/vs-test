@@ -12,27 +12,70 @@ const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
 
     if (match) {
       const testName = match[1];
-      lastTest.save(testName);
       return testName;
     }
   }
 
-  return lastTest.load();
+  return null;
+};
+
+const testCommandResolvers = {
+  jest: (document: vscode.TextDocument, lineNumber: number) => {
+    const settings = getExtensionSettings();
+
+    const { command, flags } = settings.jest;
+
+    const testName = getJsTestName(document, lineNumber);
+    if (!testName) {
+      return null;
+    }
+    return `${command} ${flags} -t '${testName}'`;
+  },
+  elixir: (document: vscode.TextDocument, lineNumber: number) => {
+    const settings = getExtensionSettings();
+    const uri = document.uri;
+    if (!uri.fsPath.match(/_test.ex$/)) {
+      return null;
+    }
+    const path = `${vscode.workspace.asRelativePath(uri)}:${lineNumber}`;
+    const { command, flags } = settings.elixir;
+    return `${command} ${path} ${flags}`;
+  }
+};
+
+const getTestType = (document: vscode.TextDocument) => {
+  const { languageId } = document;
+  switch (languageId) {
+    case "javascript":
+      return "jest";
+      break;
+    case "elixir":
+      return "elixir";
+      break;
+    default:
+      vscode.window.showErrorMessage(`${languageId} is not supported`);
+      return null;
+  }
+};
+
+const remember = (callback: any) => {
+  const command = callback();
+  if (command) {
+    return lastTest.save(command);
+  } else {
+    return lastTest.load();
+  }
 };
 
 export default function getTestCommand(
   document: vscode.TextDocument,
   lineNumber: number
 ) {
-  // const { languageId } = document;
-  const settings = getExtensionSettings();
+  const framework = getTestType(document);
+  const resolver = framework && testCommandResolvers[framework];
 
-  const { command, flags } = settings.jest;
-
-  const testName = getJsTestName(document, lineNumber);
-  if (!testName) {
+  if (!resolver) {
     return null;
   }
-  const rv = `${command} ${flags} -t '${testName}'`;
-  return rv;
+  return remember(() => resolver(document, lineNumber));
 }
