@@ -14,12 +14,27 @@ suite("getTestCommand", () => {
   suite("elixir", () => {
     const elixirFile =
       "/Users/ignu/code/oss/vs-test/src/test/examples/elixir_project/test/cool_test.ex";
+    const nonTestFile =
+      "/Users/ignu/code/oss/vs-test/src/test/examples/elixir_project/cool.ex";
 
     test("Returns null when not on in a test", done => {
       vscode.workspace.openTextDocument(elixirFile).then(document => {
-        const expectedCommand = "mix test test/cool_test.ex:6";
-        assert.equal(getTestCommand(document, 6), expectedCommand);
+        const command = getTestCommand(document, 6) || "";
+        const match = command.match(/mix test(.)+:6/);
+        assert.ok(!!match);
         done();
+      }, onError(done));
+    });
+
+    test("Remembers the last test when no longer in a test", done => {
+      vscode.workspace.openTextDocument(elixirFile).then(document => {
+        getTestCommand(document, 5);
+        vscode.workspace.openTextDocument(nonTestFile).then(document => {
+          const command = getTestCommand(document, 6) || "";
+          const match = command.match(/mix test(.)+:5/);
+          assert.ok(!!match);
+          done();
+        });
       }, onError(done));
     });
   });

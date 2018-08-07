@@ -34,6 +34,16 @@
           "description": "Flags to pass to jest",
           "type": "string",
           "default": "--no-coverage"
+        },
+        "vstest.elixir.command": {
+          "description": "The command to start the elixir test runner",
+          "type": "string",
+          "default": "mix test"
+        },
+        "vstest.elixir.flags": {
+          "description": "Flags to pass elixir tests",
+          "type": "string",
+          "default": ""
         }
       }
     }

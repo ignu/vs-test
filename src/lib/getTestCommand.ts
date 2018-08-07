@@ -12,12 +12,11 @@ const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
 
     if (match) {
       const testName = match[1];
-      lastTest.save(testName);
       return testName;
     }
   }
 
-  return lastTest.load();
+  return null;
 };
 
 const testCommandResolvers = {
@@ -30,11 +29,17 @@ const testCommandResolvers = {
     if (!testName) {
       return null;
     }
-    const rv = `${command} ${flags} -t '${testName}'`;
-    return rv;
+    return `${command} ${flags} -t '${testName}'`;
   },
   elixir: (document: vscode.TextDocument, lineNumber: number) => {
-    return "mix test test/cool_test.ex:6";
+    const settings = getExtensionSettings();
+    const uri = document.uri;
+    if (!uri.fsPath.match(/_test.ex$/)) {
+      return null;
+    }
+    const path = `${vscode.workspace.asRelativePath(uri)}:${lineNumber}`;
+    const { command, flags } = settings.elixir;
+    return `${command} ${path} ${flags}`;
   }
 };
 
@@ -45,11 +50,20 @@ const getTestType = (document: vscode.TextDocument) => {
       return "jest";
       break;
     case "elixir":
-      return "jest";
+      return "elixir";
       break;
     default:
       vscode.window.showErrorMessage(`${languageId} is not supported`);
       return null;
+  }
+};
+
+const remember = (callback: any) => {
+  const command = callback();
+  if (command) {
+    return lastTest.save(command);
+  } else {
+    return lastTest.load();
   }
 };
 
@@ -63,5 +77,5 @@ export default function getTestCommand(
   if (!resolver) {
     return null;
   }
-  return resolver(document, lineNumber);
+  return remember(() => resolver(document, lineNumber));
 }
