@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import lastTest from "./lastTest";
-
 import { getExtensionSettings } from "./settings";
+
+type TestType = "Focused" | "File";
 
 const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
   for (let line = lineNumber; line >= 0; line--) {
@@ -12,34 +13,56 @@ const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
 
     if (match) {
       const testName = match[1];
-      return testName;
+      return testName.trim();
     }
   }
 
   return null;
 };
 
+const getFileName = (document: vscode.TextDocument) => {
+  const match = document.fileName.match(/\w+(?:\.\w+).*$/);
+  if (!match) {
+    return null;
+  }
+  return match[0].replace(".js", "").replace(".test", "");
+};
+
 const testCommandResolvers = {
-  jest: (document: vscode.TextDocument, lineNumber: number) => {
+  jest: (
+    document: vscode.TextDocument,
+    lineNumber: number,
+    testType: TestType
+  ) => {
     const settings = getExtensionSettings();
 
     const { command, flags } = settings.jest;
 
-    const testName = getJsTestName(document, lineNumber);
+    const testName =
+      testType === "File"
+        ? getFileName(document)
+        : getJsTestName(document, lineNumber);
+
     if (!testName) {
       return null;
     }
     return `${command} ${flags} -t '${testName}'`;
   },
-  elixir: (document: vscode.TextDocument, lineNumber: number) => {
+  elixir: (
+    document: vscode.TextDocument,
+    lineNumber: number,
+    testType: TestType
+  ) => {
     const settings = getExtensionSettings();
     const uri = document.uri;
-    if (!uri.fsPath.match(/_test.ex$/)) {
+    if (!uri.fsPath.match(/_test.ex(s)?$/)) {
       return null;
     }
-    const path = `${vscode.workspace.asRelativePath(uri)}:${lineNumber}`;
+    const lineString = testType === "Focused" ? `:${lineNumber}` : "";
+    const path = `${vscode.workspace.asRelativePath(uri)}${lineString}`;
+    console.log("PATH", path);
     const { command, flags } = settings.elixir;
-    return `${command} ${path} ${flags}`;
+    return `${command} ${path} ${flags}`.trim();
   }
 };
 
@@ -69,7 +92,8 @@ const remember = (callback: any) => {
 
 export default function getTestCommand(
   document: vscode.TextDocument,
-  lineNumber: number
+  lineNumber: number,
+  testType: TestType
 ) {
   const framework = getTestType(document);
   const resolver = framework && testCommandResolvers[framework];
@@ -77,5 +101,5 @@ export default function getTestCommand(
   if (!resolver) {
     return null;
   }
-  return remember(() => resolver(document, lineNumber));
+  return remember(() => resolver(document, lineNumber, testType));
 }
