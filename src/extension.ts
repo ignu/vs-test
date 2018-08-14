@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 import getTestCommand from "./lib/getTestCommand";
+import { exec } from "child_process";
+import { getExtensionSettings } from "./lib/settings";
 
 const getOrCreateTerminal = () => {
   const count = (<any>vscode.window).terminals.length;
@@ -11,16 +13,17 @@ const getOrCreateTerminal = () => {
 };
 
 const run = (command: string) => {
-  let terminal = getOrCreateTerminal();
-  vscode.window.showInformationMessage(`VsTest: Running ${command}.....`);
-  terminal.sendText(command);
+  const settings = getExtensionSettings();
+  runInITerm(command, false);
+  settings.runIn === "terminal"
+    ? runInTerminal(command)
+    : runInITerm(command, settings.focusIterm);
 };
 
 const runTest = (testType: "Focused" | "File") => {
   const editor = vscode.window.activeTextEditor;
 
   if (!editor) {
-    // TODO: run last test
     vscode.window.showInformationMessage(`VsTest: No file selected`);
     return;
   }
@@ -42,6 +45,26 @@ const runTest = (testType: "Focused" | "File") => {
   }
   run(command);
 };
+
+function runInTerminal(command: string) {
+  let terminal = getOrCreateTerminal();
+  vscode.window.showInformationMessage(`VsTest: Running ${command}.....`);
+  terminal.sendText(command);
+}
+
+function runInITerm(command: string, activate: boolean) {
+  const esc = (s: string) => s.replace(/\'/g, "'\"'\"'");
+  const iTermCommand =
+    `osascript ` +
+    ` -e 'tell app "iTerm"' ` +
+    ` -e 'set mysession to current session of current window' ` +
+    ` -e 'set mysession to current session of current window' ` +
+    ` -e 'tell mysession to write text "${esc(command)}"' ` +
+    ` ${activate ? "-e 'activate'" : ""} ` +
+    ` -e 'end tell'`;
+
+  exec(iTermCommand);
+}
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
