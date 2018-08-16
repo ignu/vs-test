@@ -1,4 +1,4 @@
-# vs-test
+![Vs-Test](https://github.com/ignu/vs-test/raw/master/assets/logo.png)
 
 Trying to mimic some of [vim-test](https://github.com/janko-m/vim-test) in VS Code
 
