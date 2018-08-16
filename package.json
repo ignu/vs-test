@@ -30,13 +30,13 @@
       "type": "object",
       "title": "VsTest configuration",
       "properties": {
-        "runInIterm": {
+        "vstest.runInIterm": {
           "description": "If true, will run tests the last active iTerm window instead of the deidcated terminal",
           "type": "boolean",
           "default": false
         },
-        "focusIterm": {
-          "description": "If true, will active iTerm on test runs",
+        "vstest.focusIterm": {
+          "description": "If true, will activate iTerm on test runs",
           "type": "boolean",
           "default": false
         },
