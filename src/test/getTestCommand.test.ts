@@ -1,5 +1,6 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
+import { pathTo } from "./testUtils";
 
 import getTestCommand from "../lib/getTestCommand";
 const assertMatch = (string: string | null, regex: RegExp) => {
@@ -16,10 +17,10 @@ suite("getTestCommand", () => {
   };
 
   suite("elixir", () => {
-    const elixirFile =
-      "/Users/ignu/code/oss/vs-test/src/test/examples/elixir_project/test/cool_test.ex";
-    const nonTestFile =
-      "/Users/ignu/code/oss/vs-test/src/test/examples/elixir_project/cool.ex";
+    const elixirFile = pathTo(
+      "src/test/examples/elixir_project/test/cool_test.ex"
+    );
+    const nonTestFile = pathTo("src/test/examples/elixir_project/cool.ex");
 
     test("Returns null when not on in a test", done => {
       vscode.workspace.openTextDocument(elixirFile).then(document => {
@@ -54,8 +55,7 @@ suite("getTestCommand", () => {
   });
 
   suite("jest", () => {
-    const jestFile =
-      "/Users/ignu/code/oss/vs-test/src/test/examples/JestFile.test.js";
+    const jestFile = pathTo("src/test/examples/JestFile.test.js");
 
     test("Returns null when not on in a test", done => {
       vscode.workspace.openTextDocument(jestFile).then(document => {
