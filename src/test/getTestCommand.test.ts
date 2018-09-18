@@ -54,6 +54,26 @@ suite("getTestCommand", () => {
     });
   });
 
+  suite("test-unit", () => {
+    const testFile = pathTo(
+      "src/test/examples/test_unit_project/test/models/cool_test.rb"
+    );
+
+    test.only("can run a focused test unit file", done => {
+      vscode.workspace.openTextDocument(testFile).then(document => {
+        const actualCommand = getTestCommand(document, 2, "Focused");
+        const expectedCommand =
+          "ruby - I test src/test/examples/test_unit_project/test/models/cool_test.rb --name='/test_example$/'";
+
+        console.log(actualCommand);
+        console.log("------");
+
+        assert.equal(expectedCommand, actualCommand);
+        done();
+      }, onError(done));
+    });
+  });
+
   suite("jest", () => {
     const jestFile = pathTo("src/test/examples/JestFile.test.js");
 

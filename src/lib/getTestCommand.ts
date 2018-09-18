@@ -4,6 +4,25 @@ import { getExtensionSettings } from "./settings";
 
 type TestType = "Focused" | "File";
 
+const getTestUnitTestName = (
+  document: vscode.TextDocument,
+  lineNumber: number
+) => {
+  for (let line = lineNumber; line >= 0; line--) {
+    const { text } = document.lineAt(line);
+
+    const regex = /test ["'](.+)["'] do/;
+    const match = text.match(regex);
+
+    if (match) {
+      const testName = match[1];
+      return testName.trim();
+    }
+  }
+
+  return null;
+};
+
 const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
   for (let line = lineNumber; line >= 0; line--) {
     const { text } = document.lineAt(line);
@@ -48,6 +67,32 @@ const testCommandResolvers = {
     }
     return `${command} ${flags} -t '${testName}'`;
   },
+  ruby: (
+    document: vscode.TextDocument,
+    lineNumber: number,
+    testType: TestType
+  ) => {
+    console.log(document.fileName);
+    const settings = getExtensionSettings();
+
+    const { command } = settings.testUnit;
+
+    const uri = document.uri;
+    if (!uri.fsPath.match(/_test.rb?$/)) {
+      return null;
+    }
+
+    const testName =
+      testType === "File"
+        ? vscode.workspace.asRelativePath(uri)
+        : getTestUnitTestName(document, lineNumber);
+
+    if (!testName) {
+      return null;
+    }
+
+    return `${command} ${getFileName(document)} --name='${testName}'`;
+  },
   elixir: (
     document: vscode.TextDocument,
     lineNumber: number,
@@ -75,7 +120,11 @@ const getTestType = (document: vscode.TextDocument) => {
     case "elixir":
       return "elixir";
       break;
+    case "ruby":
+      return "ruby";
+      break;
     default:
+      console.warn(`🤢 ${languageId} is not supported`);
       vscode.window.showErrorMessage(`${languageId} is not supported`);
       return null;
   }
