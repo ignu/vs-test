@@ -47,6 +47,8 @@ const getFileName = (document: vscode.TextDocument) => {
   return match[0].replace(".js", "").replace(".test", "");
 };
 
+const getPath = (uri: vscode.Uri) => vscode.workspace.asRelativePath(uri);
+
 const testCommandResolvers = {
   jest: (
     document: vscode.TextDocument,
@@ -84,14 +86,13 @@ const testCommandResolvers = {
 
     const testName =
       testType === "File"
-        ? vscode.workspace.asRelativePath(uri)
-        : getTestUnitTestName(document, lineNumber);
+        ? ""
+        : ` --name='${getTestUnitTestName(document, lineNumber)}'`;
 
-    if (!testName) {
-      return null;
-    }
-
-    return `${command} ${getFileName(document)} --name='${testName}'`;
+    console.log("🤢🚀🍣");
+    console.log(getPath(uri));
+    console.log("🤢🚀🍣");
+    return `${command} ${getPath(uri)} ${testName}'`;
   },
   elixir: (
     document: vscode.TextDocument,
@@ -104,7 +105,7 @@ const testCommandResolvers = {
       return null;
     }
     const lineString = testType === "Focused" ? `:${lineNumber}` : "";
-    const path = `${vscode.workspace.asRelativePath(uri)}${lineString}`;
+    const path = `${getPath(uri)}${lineString}`;
     console.log("PATH", path);
     const { command, flags } = settings.elixir;
     return `${command} ${path} ${flags}`.trim();

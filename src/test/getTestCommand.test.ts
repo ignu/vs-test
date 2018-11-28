@@ -63,7 +63,7 @@ suite("getTestCommand", () => {
       vscode.workspace.openTextDocument(testFile).then(document => {
         const actualCommand = getTestCommand(document, 2, "Focused");
         const expectedCommand =
-          "ruby - I test src/test/examples/test_unit_project/test/models/cool_test.rb --name='/test_example$/'";
+          "ruby -I test src/test/examples/test_unit_project/test/models/cool_test.rb --name='/test_example$/'";
 
         console.log(actualCommand);
         console.log("------");
