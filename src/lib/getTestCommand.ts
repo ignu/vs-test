@@ -82,23 +82,22 @@ const testCommandResolvers = {
     if (!uri.fsPath.match(/_test.rb?$/)) {
       return null;
     }
+    const regex = /test\/(.)+_test.rb$/;
+    const match = uri.fsPath.match(regex);
 
-    console.log('🦄 - uri', uri);
-    console.log(vscode.workspace.workspaceFolders);
-    const folder = vscode.workspace.getWorkspaceFolder(uri);
-    console.log("😼folder", folder);
-    if (folder) {
-      console.log(folder.uri);
-      console.log(getPath(folder.uri));
+    if (!match) {
+      return null;
     }
-    console.log("🦄 - 121212121212121212", 121212121212121212);
 
+    console.log('😼match', match);
+    const path = match[0];
+    console.log('😼path', path);
     const testName =
       testType === "File"
         ? ""
         : ` --name='${getTestUnitTestName(document, lineNumber)}'`;
 
-    return `${command} ${getPath(uri)} ${testName}'`;
+    return `${command} ${path} ${testName}'`;
   },
   elixir: (
     document: vscode.TextDocument,
