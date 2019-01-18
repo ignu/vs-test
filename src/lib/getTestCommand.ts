@@ -74,7 +74,6 @@ const testCommandResolvers = {
     lineNumber: number,
     testType: TestType
   ) => {
-    console.log(document.fileName);
     const settings = getExtensionSettings();
 
     const { command } = settings.testUnit;
@@ -84,14 +83,21 @@ const testCommandResolvers = {
       return null;
     }
 
+    console.log('🦄 - uri', uri);
+    console.log(vscode.workspace.workspaceFolders);
+    const folder = vscode.workspace.getWorkspaceFolder(uri);
+    console.log("😼folder", folder);
+    if (folder) {
+      console.log(folder.uri);
+      console.log(getPath(folder.uri));
+    }
+    console.log("🦄 - 121212121212121212", 121212121212121212);
+
     const testName =
       testType === "File"
         ? ""
         : ` --name='${getTestUnitTestName(document, lineNumber)}'`;
 
-    console.log("🤢🚀🍣");
-    console.log(getPath(uri));
-    console.log("🤢🚀🍣");
     return `${command} ${getPath(uri)} ${testName}'`;
   },
   elixir: (
