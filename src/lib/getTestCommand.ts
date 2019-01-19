@@ -78,26 +78,22 @@ const testCommandResolvers = {
 
     const { command } = settings.testUnit;
 
-    const uri = document.uri;
-    if (!uri.fsPath.match(/_test.rb?$/)) {
-      return null;
-    }
-    const regex = /test\/(.)+_test.rb$/;
-    const match = uri.fsPath.match(regex);
-
-    if (!match) {
+    const uri = document.uri.fsPath;
+    if (!uri.match(/_test.rb?$/)) {
       return null;
     }
 
-    console.log('😼match', match);
-    const path = match[0];
-    console.log('😼path', path);
+    const path = uri.substr(uri.lastIndexOf("/test/") + 1, uri.length);
+    if (!path) {
+      return null;
+    }
+
     const testName =
       testType === "File"
         ? ""
-        : ` --name='${getTestUnitTestName(document, lineNumber)}'`;
+        : `--name='${getTestUnitTestName(document, lineNumber)}'`;
 
-    return `${command} ${path} ${testName}'`;
+    return `${command} ${path} ${testName}`;
   },
   elixir: (
     document: vscode.TextDocument,

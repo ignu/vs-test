@@ -46,11 +46,11 @@ suite("getTestCommand", () => {
       "src/test/examples/test_unit_project/test/models/cool_test.rb"
     );
 
-    test.only("can run a focused test unit file", async () => {
+    test("can run a focused test unit file", async () => {
       const document = await vscode.workspace.openTextDocument(testFile);
       const actualCommand = getTestCommand(document, 2, "Focused");
       const expectedCommand =
-        "ruby -I test test/models/cool_test.rb --name='/test_example$/'";
+        "ruby -I test test/models/cool_test.rb --name='cool example'";
 
       assert.equal(expectedCommand, actualCommand);
     });
