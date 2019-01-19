@@ -23,3 +23,7 @@ Adding the power of [vim-test](https://github.com/janko-m/vim-test) to VS Code
 
 - `vstest.elixir.command` - The command to start the elixir test runner
 - `vstest.elixir.flags` - Flags to pass elixir tests
+
+## Vim Keybindings
+
+If you want functionality like vim-test and are using the Vim extension, add the following to your `settings.json`
