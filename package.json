@@ -2,6 +2,7 @@
   "name": "vstest",
   "displayName": "VsTest",
   "description": "Run focused unit tests from the file you're editing",
+  "repository": "https://github.com/ignu/vs-test/",
   "version": "0.0.1",
   "publisher": "ignu",
   "engines": {
@@ -11,18 +12,18 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.runFocusedTest",
-    "onCommand:extension.runCurrentTestFile"
+    "onCommand:vstest.runFocusedTest",
+    "onCommand:vstest.runCurrentTestFile"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
       {
-        "command": "extension.runFocusedTest",
+        "command": "vstest.runFocusedTest",
         "title": "VsTest: Run Focused Test"
       },
       {
-        "command": "extension.runCurrentTestFile",
+        "command": "vstest.runCurrentTestFile",
         "title": "VsTest: Run Current File Tests"
       }
     ],
@@ -76,10 +77,10 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6",
-    "tslint": "^5.8.0",
+    "@types/mocha": "^2.2.42",
     "@types/node": "^7.0.43",
-    "@types/mocha": "^2.2.42"
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6"
   }
 }

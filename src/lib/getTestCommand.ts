@@ -116,6 +116,9 @@ const testCommandResolvers = {
 const getTestType = (document: vscode.TextDocument) => {
   const { languageId } = document;
   switch (languageId) {
+    case "typescript":
+      return "jest";
+      break;
     case "javascript":
       return "jest";
       break;

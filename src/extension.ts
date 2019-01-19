@@ -68,14 +68,14 @@ function runInITerm(command: string, activate: boolean) {
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
-    "extension.runFocusedTest",
+    "vstest.runFocusedTest",
     () => runTest("Focused")
   );
 
   context.subscriptions.push(disposable);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.runCurrentTestFile", () =>
+    vscode.commands.registerCommand("vstest.runCurrentTestFile", () =>
       runTest("File")
     )
   );
