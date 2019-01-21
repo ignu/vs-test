@@ -27,3 +27,18 @@ Adding the power of [vim-test](https://github.com/janko-m/vim-test) to VS Code
 ## Vim Keybindings
 
 If you want functionality like vim-test and are using the Vim extension, add the following to your `settings.json`
+
+    "vim.normalModeKeyBindingsNonRecursive": [
+      {
+        "before": ["t"],
+        "commands": [
+          "vstest.runFocusedTest"
+        ]
+      },
+      {
+        "before": ["T"],
+        "commands": [
+          "vstest.runCurrentTestFile"
+        ]
+      }
+    ],
