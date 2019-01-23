@@ -14,10 +14,9 @@ const getOrCreateTerminal = () => {
 
 const run = (command: string) => {
   const settings = getExtensionSettings();
-  runInITerm(command, false);
-  settings.runIn === "terminal"
-    ? runInTerminal(command)
-    : runInITerm(command, settings.focusIterm);
+  settings.runIn === "iTerm"
+    ? runInITerm(command, settings.focusIterm) :
+    runInTerminal(command);
 };
 
 const runTest = (testType: "Focused" | "File") => {

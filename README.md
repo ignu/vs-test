@@ -11,7 +11,7 @@ Adding the power of [vim-test](https://github.com/janko-m/vim-test) to VS Code
 
 ### Global
 
-- `vstest.runInIterm` - If true, will run tests the last active iTerm window instead of the deidcated terminal
+- `vstest.runIn` - either "terminal" or "iTerm"
 - `vstest.focusIterm` - If true, will activate iTerm on test runs
 
 ### JavaScript
