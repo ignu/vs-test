@@ -42,6 +42,10 @@ const runTest = (testType: "Focused" | "File") => {
     vscode.window.showWarningMessage("VsTest: No test found.");
     return;
   }
+
+  // TODO: add a setting to disable this.
+  document.save();
+
   run(command);
 };
 
