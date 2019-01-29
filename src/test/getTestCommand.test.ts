@@ -61,6 +61,7 @@ suite("getTestCommand", () => {
 
     test("Returns null when not on in a test", async () => {
       const document = await vscode.workspace.openTextDocument(jestFile);
+      //TODO: append namespace and method name
       const expectedCommand =
         "./node_modules/.bin/jest --no-coverage -t 'good test'";
 
