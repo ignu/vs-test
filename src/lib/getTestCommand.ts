@@ -88,12 +88,12 @@ const testCommandResolvers = {
       return null;
     }
 
-    const testName =
+    const testOpts =
       testType === "File"
         ? ""
-        : `--name='${getTestUnitTestName(document, lineNumber)}'`;
+        : `TESTOPTS="--name='${getTestUnitTestName(document, lineNumber)}'"`;
 
-    return `${command} ${path} ${testName}`;
+    return `${command} TEST="${path}" ${testOpts}`;
   },
   elixir: (
     document: vscode.TextDocument,

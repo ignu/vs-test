@@ -48,7 +48,7 @@
         "vstest.testUnit.command": {
           "description": "The command to run in a test unit or minitest test.",
           "type": "string",
-          "default": "ruby -I test"
+          "default": "./bin/rake test"
         },
         "vstest.jest.command": {
           "description": "The path to the Jest binary, or an npm command to run tests prefixed with `--` e.g. `node_modules/.bin/jest` or `npm test --`",

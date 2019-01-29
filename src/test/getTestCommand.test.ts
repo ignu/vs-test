@@ -50,7 +50,7 @@ suite("getTestCommand", () => {
       const document = await vscode.workspace.openTextDocument(testFile);
       const actualCommand = getTestCommand(document, 2, "Focused");
       const expectedCommand =
-        "ruby -I test test/models/cool_test.rb --name='cool example'";
+        `./bin/rake test TEST="test/models/cool_test.rb" TESTOPTS="--name='cool example'"`;
 
       assert.equal(expectedCommand, actualCommand);
     });
