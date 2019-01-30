@@ -42,6 +42,42 @@ suite("getTestCommand", () => {
   });
 
   suite("test-unit", () => {
+    // TODO:
+    // let test#ruby#patterns = {
+    //   \ 'test': [
+    //     \ '\v^\s*def (test_\w+)',
+    //     \ '\v^\s*test%(\(| )%("|'')(.*)%("|'')',
+    //     \ '\v^\s*it%(\(| )%("|'')(.*)%("|'')',
+    //   \],
+    //   \ 'namespace': [
+    //     \ '\v^\s*%(class|module) (\S+)',
+    //     \ '\v^\s*describe%(\(| )%("|'')(.*)%("|'')',
+    //     \ '\v^\s*describe%(\(| )(\S+)',
+    //   \],
+    // \}
+
+// TODO: 
+//     function! test#ruby#minitest#executable() abort
+//   if filereadable('Rakefile') && system('cat Rakefile') =~# 'Rake::TestTask' ||
+//    \ (exists('b:rails_root') || filereadable('./bin/rails'))
+//     if !empty(glob('.zeus.sock'))
+//       return 'zeus rake test'
+//     elseif filereadable('./bin/rake') && get(g:, 'test#ruby#use_binstubs', 1)
+//       return './bin/rake test'
+//     elseif filereadable('Gemfile') && get(g:, 'test#ruby#bundle_exec', 1)
+//       return 'bundle exec rake test'
+//     else
+//       return 'rake test'
+//     endif
+//   else
+//     if filereadable('Gemfile') && get(g:, 'test#ruby#bundle_exec', 1)
+//       return 'bundle exec ruby -I test'
+//     else
+//       return 'ruby -I test'
+//     endif
+//   endif
+// endfunction
+
     const testFile = pathTo(
       "src/test/examples/test_unit_project/test/models/cool_test.rb"
     );
