@@ -1,116 +1,14 @@
 import * as vscode from "vscode";
 import lastTest from "./lastTest";
-import { getExtensionSettings } from "./settings";
-
-type TestType = "Focused" | "File";
-
-const getTestUnitTestName = (
-  document: vscode.TextDocument,
-  lineNumber: number
-) => {
-  for (let line = lineNumber; line >= 0; line--) {
-    const { text } = document.lineAt(line);
-
-    const regex = /test ["'](.+)["'] do/;
-    const match = text.match(regex);
-
-    if (match) {
-      const testName = match[1];
-      return testName.trim();
-    }
-  }
-
-  return null;
-};
-
-const getJsTestName = (document: vscode.TextDocument, lineNumber: number) => {
-  for (let line = lineNumber; line >= 0; line--) {
-    const { text } = document.lineAt(line);
-
-    const regex = /it ?\(["'](.+)["']/;
-    const match = text.match(regex);
-
-    if (match) {
-      const testName = match[1];
-      return testName.trim();
-    }
-  }
-
-  return null;
-};
-
-const getFileName = (document: vscode.TextDocument) => {
-  const match = document.fileName.match(/\w+(?:\.\w+).*$/);
-  if (!match) {
-    return null;
-  }
-  return match[0].replace(".js", "").replace(".test", "");
-};
-
-const getPath = (uri: vscode.Uri) => vscode.workspace.asRelativePath(uri);
+import { TestType } from "../types";
+import { resolveRuby } from "./resolvers/ruby";
+import { resolveElixir } from "./resolvers/elixir";
+import { resolveJavaScript } from "./resolvers/javascript";
 
 const testCommandResolvers = {
-  jest: (
-    document: vscode.TextDocument,
-    lineNumber: number,
-    testType: TestType
-  ) => {
-    const settings = getExtensionSettings();
-
-    const { command, flags } = settings.jest;
-
-    const testName =
-      testType === "File"
-        ? getFileName(document)
-        : getJsTestName(document, lineNumber);
-
-    if (!testName) {
-      return null;
-    }
-    return `${command} ${flags} -t '${testName}'`;
-  },
-  ruby: (
-    document: vscode.TextDocument,
-    lineNumber: number,
-    testType: TestType
-  ) => {
-    const settings = getExtensionSettings();
-
-    const { command } = settings.testUnit;
-
-    const uri = document.uri.fsPath;
-    if (!uri.match(/_test.rb?$/)) {
-      return null;
-    }
-
-    const path = uri.substr(uri.lastIndexOf("/test/") + 1, uri.length);
-    if (!path) {
-      return null;
-    }
-
-    const testOpts =
-      testType === "File"
-        ? ""
-        : `TESTOPTS="--name='${getTestUnitTestName(document, lineNumber)}'"`;
-
-    return `${command} TEST="${path}" ${testOpts}`;
-  },
-  elixir: (
-    document: vscode.TextDocument,
-    lineNumber: number,
-    testType: TestType
-  ) => {
-    const settings = getExtensionSettings();
-    const uri = document.uri;
-    if (!uri.fsPath.match(/_test.ex(s)?$/)) {
-      return null;
-    }
-    const lineString = testType === "Focused" ? `:${lineNumber}` : "";
-    const path = `${getPath(uri)}${lineString}`;
-    console.log("PATH", path);
-    const { command, flags } = settings.elixir;
-    return `${command} ${path} ${flags}`.trim();
-  }
+  jest: resolveJavaScript,
+  ruby: resolveRuby,
+  elixir: resolveElixir
 };
 
 const getTestType = (document: vscode.TextDocument) => {
