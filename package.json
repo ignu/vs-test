@@ -45,6 +45,11 @@
           "type": "boolean",
           "default": false
         },
+        "vstest.rspec.command": {
+          "description": "The command to run in a test unit or minitest test.",
+          "type": "string",
+          "default": "bundle exec rspec"
+        },
         "vstest.testUnit.command": {
           "description": "The command to run in a test unit or minitest test.",
           "type": "string",
@@ -85,6 +90,6 @@
     "@types/node": "^7.0.43",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
-    "vscode": "^1.1.6"
+    "vscode": "^1.3.0"
   }
 }

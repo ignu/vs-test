@@ -4,6 +4,9 @@ type RunIn = "terminal" | "iTerm";
 export interface IPluginSettings {
   focusIterm: boolean;
   runIn: RunIn;
+  rspec: {
+    command: string;
+  };
   testUnit: {
     command: string;
   };
@@ -22,6 +25,9 @@ export function getExtensionSettings(): IPluginSettings {
   return {
     focusIterm: config.get<boolean>("focusIterm") || false,
     runIn: config.get<RunIn>("runIn") || "terminal",
+    rspec: {
+      command: config.get<string>("rspec.command") || "bundle exec rspec"
+    },
     testUnit: {
       command: config.get<string>("testUnit.command") || "ruby -I test"
     },
