@@ -2,6 +2,7 @@
 	"rules": {
 		"no-string-throw": true,
 		"no-unused-expression": true,
+		"explicit-function-return-type": false,
 		"no-duplicate-variable": true,
 		"curly": true,
 		"class-name": true,
